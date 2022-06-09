@@ -1,4 +1,4 @@
-# OpenAPI Swagger YAML File Extract and Clean Tool
+# OpenAPI Swagger YAML File Extract, Clean and Convert Tool
 
 Nick Jiang <congtao.jiang@outlook.com>
 
