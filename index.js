@@ -9,7 +9,7 @@ let log = console.log;
 
 let argv = require('yargs')
   .usage(
-    'Usage: $0 [--uris <uris>] -i <inYamlFile> [-o <outFile>] -l -t --compact'
+    'Usage: $0 -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t --compact>'
   )
   .describe(
     'l',
