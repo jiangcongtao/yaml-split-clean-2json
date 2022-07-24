@@ -26,7 +26,7 @@ e.g.
 ```bash
 % node index.js -h                                             
 Usage: index.js -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t
---compact>
+--compact> | -a
 
 Options:
       --version  Show version number                                   [boolean]
@@ -37,6 +37,7 @@ Options:
       --compact  Convert to json file in compact mode. minified
       --uris     Comma-delimitted Swagger URI endponts to extracts out of input
                  <inYamlFile>
+  -a             Add custom x-encode-id, x-session-id, x-sys-id headers
   -h, --help     Show help                                             [boolean]
 
 Copyright (c) 2022, Nick Jiang<congtao.jiang@outlook.com>

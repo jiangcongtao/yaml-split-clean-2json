@@ -4,14 +4,14 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const { exit } = require('process');
 const { processDocForUris } = require('./yaml-processor');
+const { addHeadersParam } = require('./headersSpec');
 const chalk = require('chalk');
-const { JSONPath } = require('jsonpath-plus');
 const { testMatch } = require('./utils');
 let log = console.log;
 
 let argv = require('yargs')
   .usage(
-    'Usage: $0 -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t --compact>'
+    'Usage: $0 -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t --compact> | -a'
   )
   .describe(
     'l',
@@ -26,6 +26,7 @@ let argv = require('yargs')
     'uris',
     'Comma-delimitted Swagger URI endponts to extracts out of input <inYamlFile>'
   )
+  .describe('a', 'Add custom x-encode-id, x-session-id, x-sys-id headers')
   .help('h')
   .alias('h', 'help')
   .alias('l', 'list')
@@ -38,6 +39,7 @@ let {
   o: outFile,
   uris: urisString,
   l: showURIs,
+  a: addHeaders,
   t: tojson,
   compact,
 } = argv;
@@ -100,6 +102,11 @@ try {
 
   // log(uris)
   processDocForUris(uris, doc);
+
+  if (addHeaders) {
+    // add header param
+    addHeadersParam(doc);
+  }
 
   let yamlStr = yaml.dump(doc, {
     forceQuotes: false,
