@@ -1,14 +1,15 @@
 'use strict';
+const { testMatch } = require('./utils');
 
 class RefsCollector {
   constructor() {
     this.m = new Map();
     // setup $ref containers
-    this.m.set("definitions", new Set());
-    this.m.set("responses", new Set());
+    this.m.set('definitions', new Set());
+    this.m.set('responses', new Set());
     // if a PropEntry has been collected into this collector,
     // this collector will be dirty (this.dirty = true)
-    this.dirty = false; 
+    this.dirty = false;
   }
 
   data() {
@@ -43,35 +44,42 @@ const collectAllRefs = (obj, collector) => {
     return;
   }
 
-  obj ? Object.getOwnPropertyNames(obj).forEach((prop) => {
-    if (typeof obj[prop] === 'object') {
-      collectAllRefs(obj[prop], collector);
-    }
-  }): null;
-
+  obj
+    ? Object.getOwnPropertyNames(obj).forEach((prop) => {
+        if (typeof obj[prop] === 'object') {
+          collectAllRefs(obj[prop], collector);
+        }
+      })
+    : null;
 };
 
 let collectAllDerivedRefs = (doc, initialRefsMap, refsCollector) => {
-    // recursively collecting all $ref from initial urisRefCollector map,
-    // stop if no more $ref left to collect
-    initialRefsMap.forEach((propOfPropSet, prop) => {
-      let startPropSet = new Set(propOfPropSet); 
-      startPropSet.forEach((propOfProp) => {
-        collectAllRefs(doc[prop][propOfProp], refsCollector);
-      });
+  // recursively collecting all $ref from initial urisRefCollector map,
+  // stop if no more $ref left to collect
+  initialRefsMap.forEach((propOfPropSet, prop) => {
+    let startPropSet = new Set(propOfPropSet);
+    startPropSet.forEach((propOfProp) => {
+      collectAllRefs(doc[prop][propOfProp], refsCollector);
     });
-  };
+  });
+};
 
 const processDocForUris = (uris, doc) => {
   Object.keys(doc.paths).forEach((key) => {
-    if (!uris.includes(key)) {
+    // if (!uris.includes(key)) {
+    if (!testMatch(uris, key)) {
       delete doc.paths[key];
     }
   });
 
   // collect $ref for all sepcified uri endpoints and its derived $ref
   let urisRefsCollector = new RefsCollector();
-  uris.forEach((uri) => collectAllRefs(doc.paths[uri], urisRefsCollector));
+
+  let apis = Object.getOwnPropertyNames(doc.paths).sort();
+  if (uris) {
+    apis = apis.filter((api) => testMatch(uris, api));
+  }
+  apis.forEach((api) => collectAllRefs(doc.paths[api], urisRefsCollector));
 
   let urisRefsMap = urisRefsCollector.data();
   do {

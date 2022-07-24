@@ -12,6 +12,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "js-yaml": "^4.1.0",
+    "jsonpath-plus": "^7.0.0",
     "yargs": "^17.5.1"
   }
 }

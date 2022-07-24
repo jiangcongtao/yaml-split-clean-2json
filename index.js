@@ -5,6 +5,8 @@ const yaml = require('js-yaml');
 const { exit } = require('process');
 const { processDocForUris } = require('./yaml-processor');
 const chalk = require('chalk');
+const { JSONPath } = require('jsonpath-plus');
+const { testMatch } = require('./utils');
 let log = console.log;
 
 let argv = require('yargs')
@@ -63,7 +65,12 @@ try {
 
   // show URIs in .yaml file
   if (showURIs) {
-    log(Object.getOwnPropertyNames(doc.paths).sort());
+    let apis = Object.getOwnPropertyNames(doc.paths).sort();
+    if (uris) {
+      apis = apis.filter((api) => testMatch(uris, api));
+    }
+
+    log(apis);
     exit(0);
   }
   // convert .yaml to .json
