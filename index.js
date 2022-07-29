@@ -11,7 +11,7 @@ let log = console.log;
 
 let argv = require('yargs')
   .usage(
-    'Usage: $0 -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t --compact> | -a'
+    'Usage: $0 -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t --compact> | -a | -s'
   )
   .describe(
     'l',
@@ -20,6 +20,10 @@ let argv = require('yargs')
   .describe(
     't',
     'Convert to json file for the OpenAPI Swagger file specified in "-i <inYamlFile>"'
+  )
+  .describe(
+    's',
+    'Sort API URIs when output to a yaml file or print out to terminal'
   )
   .describe('compact', 'Convert to json file in compact mode. minified')
   .describe(
@@ -41,6 +45,7 @@ let {
   l: showURIs,
   a: addHeaders,
   t: tojson,
+  s: sort,
   compact,
 } = argv;
 // let uris = ['/guests/{guestId}', '/guests/{guestId}/tvldocs'];
@@ -106,6 +111,17 @@ try {
   if (addHeaders) {
     // add header param
     addHeadersParam(doc);
+  }
+
+  if (sort) {
+    // sort API keys
+    let pathsObject = doc.paths
+    doc.paths = Object.keys(pathsObject)
+      .sort()
+      .reduce((accumulator, key) => {
+        accumulator[key] = pathsObject[key];
+        return accumulator;
+      }, {});
   }
 
   let yamlStr = yaml.dump(doc, {

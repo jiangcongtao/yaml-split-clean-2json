@@ -26,7 +26,7 @@ e.g.
 ```bash
 % node index.js -h                                             
 Usage: index.js -i <inYamlFile> <[-o <outFile>] [--uris <uris>] | -l | -t
---compact> | -a
+--compact> | -a | -s
 
 Options:
       --version  Show version number                                   [boolean]
@@ -34,6 +34,8 @@ Options:
                  <inYamlFile>"
   -t, --tojson   Convert to json file for the OpenAPI Swagger file specified in
                  "-i <inYamlFile>"
+  -s             Sort API URIs when output to a yaml file or print out to
+                 terminal
       --compact  Convert to json file in compact mode. minified
       --uris     Comma-delimitted Swagger URI endponts to extracts out of input
                  <inYamlFile>
@@ -46,13 +48,25 @@ Copyright (c) 2022, Nick Jiang<congtao.jiang@outlook.com>
 ### Extract APIs
 
 ```bash
-node index.js -i ./api.yaml --uris '/path/{to}/{endpoint`},/path/{to}/{endpoint`' -o aa.yaml
+node index.js -i ./api.yaml --uris '/path/{to}/{endpoint},/path/{to}/{endpoint' -o aa.yaml
+```
+
+### Extract APIs using regular expressions
+
+```bash
+node index.js -i ./api.yaml --uris '^/path1,^/path2' -o aa.yaml
 ```
 
 ### Clean unused `$ref` schema definitions
 
 ```bash
 node index.js -i ./api.yaml -o aa.yaml
+```
+
+### Clean unused `$ref` schema definitions and sort API URIs
+
+```bash
+node index.js -i ./api.yaml -o aa.yaml -s
 ```
 
 ### List all API URIs
