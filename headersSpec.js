@@ -55,7 +55,7 @@ const headersParamSpec = [
       '/realms/guest/enrollment',
       '/reservations$',
       '^/shop/props',
-      '^/config',
+      // '^/config',
     ],
     headers: [
       {
@@ -64,6 +64,21 @@ const headersParamSpec = [
         required: true,
         description:
           "the system id of the API requesting client, accepts one of 'ios', 'android', 'mini-program'.",
+        type: 'string',
+      },
+    ],
+  },
+  {
+    pathPatterns: [
+      '^/',
+    ],
+    headers: [
+      {
+        name: 'hltclientmessageid',
+        in: 'header',
+        required: false,
+        description:
+          "the request id for  tracing client request going through in each related system that processing the specific request",
         type: 'string',
       },
     ],
